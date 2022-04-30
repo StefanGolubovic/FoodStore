@@ -29,7 +29,7 @@ public class Loader {
         this.repository = repository;
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void loadData() {
         try (Scanner sc = new Scanner(new File("foodstore/src/main/resources/static/data/food_stores_ny_city.csv"))) {
             //skip first line
