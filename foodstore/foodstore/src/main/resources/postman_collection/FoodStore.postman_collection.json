@@ -1,0 +1,61 @@
+{
+	"info": {
+		"_postman_id": "b240f3d5-1b53-4b35-bd9d-64a5b505c4cd",
+		"name": "FoodStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "search food stores by adress",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fields\" : [\"entityNumber\", \"streetNumber\", \"streetName\"],\r\n    \"searchTerm\": \"160\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/food-store/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"food-store",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get food stores by location",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/v1/food-store/-78.89/42.91",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"food-store",
+						"-78.89",
+						"42.91"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
