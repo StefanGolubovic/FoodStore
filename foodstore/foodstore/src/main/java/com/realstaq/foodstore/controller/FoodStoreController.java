@@ -2,7 +2,6 @@ package com.realstaq.foodstore.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realstaq.foodstore.document.FoodStore;
-import com.realstaq.foodstore.repository.FoodStoreRepository;
 import com.realstaq.foodstore.search.SearchRequestDto;
 import com.realstaq.foodstore.search.SearchUtil;
 import org.elasticsearch.action.search.SearchRequest;
@@ -23,6 +22,8 @@ import java.util.List;
 @RequestMapping("/api/v1/food-store")
 public class FoodStoreController {
 
+    private static final String INDEX_NAME = "food-store-index";
+
     private Logger LOG = LoggerFactory.getLogger(FoodStoreController.class);
 
     private RestHighLevelClient client;
@@ -34,13 +35,9 @@ public class FoodStoreController {
         this.client = client;
     }
 
-    @Autowired
-    private FoodStoreRepository repository;
-
-
     @PostMapping
     public List<FoodStore> searchFoodStore(@RequestBody SearchRequestDto dto) {
-        final SearchRequest request = SearchUtil.buildSearchRequest("food-store-index", dto);
+        final SearchRequest request = SearchUtil.buildSearchRequest(INDEX_NAME, dto);
 
         if (request == null) {
             LOG.error("Failed to build search request");
@@ -57,7 +54,6 @@ public class FoodStoreController {
             }
 
             return foodStores;
-
         } catch (Exception e) {
             LOG.error(e.getMessage());
             return Collections.emptyList();
@@ -66,7 +62,7 @@ public class FoodStoreController {
 
     @GetMapping("/{lat}/{lon}")
     public List<FoodStore> getNearbyFoodStores(@PathVariable final Double lat, @PathVariable final Double lon) {
-        final SearchRequest request = SearchUtil.buildLocationSearchRequest("food-store-index", lat, lon);
+        final SearchRequest request = SearchUtil.buildLocationSearchRequest(INDEX_NAME, lat, lon);
 
         if (request == null) {
             LOG.error("Failed to build search request");

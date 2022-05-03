@@ -5,6 +5,7 @@ import com.realstaq.foodstore.repository.FoodStoreRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,12 @@ public class Loader {
 
     public static final Logger LOG = LoggerFactory.getLogger(Loader.class);
 
+    private static final int NUMBER_OF_COLUMNS = 13;
+
     private FoodStoreRepository repository;
+
+    @Value("${data.location}")
+    private String path;
 
     private String[] fields;
 
@@ -29,15 +35,17 @@ public class Loader {
         this.repository = repository;
     }
 
-//    @PostConstruct
+    @PostConstruct
     public void loadData() {
-        try (Scanner sc = new Scanner(new File("foodstore/src/main/resources/static/data/food_stores_ny_city.csv"))) {
+        try (Scanner sc = new Scanner(new File(path))) {
             //skip first line
             sc.nextLine();
             while (sc.hasNextLine()) {
                 FoodStore foodStore = generateFoodStoreDocument(sc.nextLine());
                 if (foodStore != null) {
                     repository.save(foodStore);
+                } else {
+                    LOG.info("Document not created");
                 }
             }
         } catch (Exception e) {
@@ -47,8 +55,12 @@ public class Loader {
     }
 
     private FoodStore generateFoodStoreDocument(final String line) {
-        fields = line.split(",");
-        if (fields.length != 13) {
+        if (line != null) {
+            fields = line.split(",");
+        } else {
+            return null;
+        }
+        if (fields.length != NUMBER_OF_COLUMNS) {
             return null;
         }
         return FoodStore.builder()
